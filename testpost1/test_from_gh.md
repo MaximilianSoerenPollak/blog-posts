@@ -1,6 +1,6 @@
 +++
-title = "Test blog"
-description = "This is a test blog post to test our website"
+title = "Blogpost from Github Repo"
+description = "This is a test blog post to test our website syncing with GH"
 date = 2024-11-23
 tags = ["Go", "github","test", "blogpost"]
 
