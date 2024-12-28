@@ -71,7 +71,7 @@ func (m addModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			fmt.Printf("could not add task to the DB file. Error: %s\n", err.Error())
 			os.Exit(1)
 		}
-		// cmds = append(cmds, func() tea.Msg { return switchToListModel{} })
+		cmds = append(cmds, func() tea.Msg { return switchToListModel{} })
 	}
 	return m, tea.Batch(cmds...)
 }
