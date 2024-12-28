@@ -550,7 +550,12 @@ And that is all the magic there is. If you want to switch from one model to anot
 
 And that's it, now you can repeat this process as much as you like.
 
-Bonus-Info: If you for some reason need to pass data from one model to the other you can also use the structs for that.
+
+You can look at the full source code of the final files [here](
+If you want to look at the raw Markdown file, you want find that [here](
+
+
+Bonus-Info: If you for some reason need to pass data from one model to the other you can also use the signaling structs for that.
 
 <hr>
 
