@@ -26,8 +26,8 @@ name = "Maximilian Soeren Pollak"
 ---
 
 #### TLDR
-If you just want the answer quickly without much explenation, this is for you.
-You need a couple of pre-requesits. This solution assumes you have active models (that do stuff) as well as one facilitating model, 
+If you just want the answer quickly without much explanation, this is for you.
+You need a couple of prerequisites. This solution assumes you have active models (that do stuff) as well as one facilitating model, 
 which only has the function to get messages and updates to the right place.
 In this example:   
 ```
@@ -50,7 +50,7 @@ func initMainModel() mainModel {
         activeModel: iniListModel()
     }
 
-// 3. Define a singals
+// 3. Define a signals
 type switchToAddModel struct{}
 type switchToListModel struct{}
 
@@ -103,8 +103,8 @@ func (m mainModel) Update(...) {
 
 ### The longer guide
 #### The issue
-[BubbleTea](https://github.com/charmbracelet/bubbletea) is a great library to make gorgeous TUI's in Go. It is my favourite library to create TUI's by far. However, one hurdle that I have encountered, is on working with multimple models. I looke around the internet and did not find solutions that I could understand.   
-So in this blog post I would like to make a short example as a guide and help for others who struggel with that concept in BubbleTea.  
+[BubbleTea](https://github.com/charmbracelet/bubbletea) is a great library to make gorgeous TUI's in Go. It is my favourite library to create TUI's by far. However, one hurdle that I have encountered, is on working with multimple models. I looked around the internet and did not find solutions that I could understand.   
+So in this blog post I would like to make a short example as a guide and help for others who struggle with that concept in BubbleTea.  
 *Note: This is by no means the only way to solve this issue, I just found it the easiest to understand for me.*
 
 #### The solution
@@ -114,7 +114,7 @@ So in this blog post I would like to make a short example as a guide and help fo
 
 
 #### Humble beginings
-I will guide you through making a Todo App (I know, I know) that uses multiple models.  
+I will guide you through creating a Todo App (I know, I know) that uses multiple models.  
 The multimodel part however should be applicable to any project that you might work on. I hope this is simple enough to understand but complext enough so that you see that this solution can work in bigger applications.
 
 Create a new go project with whatever name you fancy and grab BubbleTea which you can do via: `go get github.com/charmbracelet/bubbletea`.  
@@ -192,7 +192,7 @@ func main() {
 This will give us a very simple BubbleTea app that we now can execute.
 If you run it via `go run main.go` hopefully you should see something like this: 
 
-![](assets/starting_model.png)
+![](assets/bubbletea-multimodel-starting_model.png)
 and you should now be able press `s` or `d` to change the message displayed.
 
 ##### The database
@@ -307,7 +307,7 @@ func SaveTaskDBFile(filepath string, tasks []Task) {
 ### First active model
 Since the `mainModel` in the end will just facilitate the messages and switch between the 'active models' we should start work on one of them.  
 
-If we want to display our newly aquired tasks, of course we can't simply do that in the main model, that would defeat the pourpose.  
+If we want to display our newly aquired tasks, of course we can't simply do that in the main model, that would defeat the purpose.  
 So let's create our second model, containing a table that can show us all of our tasks. I will put it into `list.go`  
 For that we need the **bubbles** library from charm as well. You can get it via: `go get github.com/charmbracelet/bubbles`
 
@@ -410,7 +410,7 @@ func (m listModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 </details>
 <br>
 
-Nothing too crazy here, we are using some of the functions we declared in `task.go` and also implementing basic interactivity.
+Nothing too crazy here. We are using some of the functions we declared in `task.go` and also implementing basic interactivity.
 
 Now that's only half the work we have to do for this step. Now we have to integrate the listModel also into our mainModel.
 Change the `main.go` according to the details below.
@@ -460,13 +460,13 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 If you now run the application via `go run *.go` it should hopefully look somewhat like this: 
 
-![](assets/listModel.png)
+![](assets/bubbletea-multimodel-listModel.png)
 
 Pressing 'enter' you should get a nice printout of the currently selected row, and you can also as always exit via `ctrl+c` or `q`
 
 #### Adding a second active model
 Since we want to switch between models, let's add a second active model. You might want to add more tasks so let's implement a model that 
-let's us do just that.  
+lets us do just that.  
 For this I will use charms [huh](https://github.com/charmbracelet/huh) library, add it to the project via `go get github.com/charmbracelet/huh`.
 
 Let's create a new file for this model `add.go`. 
@@ -617,7 +617,7 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 What we do here is we switch on the 'msg' and add a case for our new 'msg' which is the switchToAddModel signal.
 If you now go ahead and run the app via `go run *.go` and press 'a' to get to our 'addModel' you hopefully see something like this: 
 
-![](assets/addModel.png)
+![](assets/bubbletea-multimodel-addModel.png)
 
 
 ##### Switching models back 
@@ -685,7 +685,7 @@ Bonus-Info: If you for some reason need to pass data from one model to the other
 
 #### Questions
 
-If you have any questions regarding this, please do not hestitate to open a discussion in the repository.
+If you have any questions regarding this, please do not hesitate to open a discussion in the repository.
 You can get there via this [link](https://github.com/MaximilianSoerenPollak/blog-posts/discussions)
 
 <hr>
