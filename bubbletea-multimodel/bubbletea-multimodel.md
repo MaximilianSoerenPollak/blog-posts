@@ -192,7 +192,7 @@ func main() {
 This will give us a very simple BubbleTea app that we now can execute.
 If you run it via `go run main.go` hopefully you should see something like this: 
 
-![](assets/bubbletea-multimodel-starting_model.png)
+![](static/assets/bubbletea-multimodel-starting_model.png)
 and you should now be able press `s` or `d` to change the message displayed.
 
 ##### The database
@@ -460,7 +460,7 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 If you now run the application via `go run *.go` it should hopefully look somewhat like this: 
 
-![](assets/bubbletea-multimodel-listModel.png)
+![](static/assets/bubbletea-multimodel-listModel.png)
 
 Pressing 'enter' you should get a nice printout of the currently selected row, and you can also as always exit via `ctrl+c` or `q`
 
@@ -617,7 +617,7 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 What we do here is we switch on the 'msg' and add a case for our new 'msg' which is the switchToAddModel signal.
 If you now go ahead and run the app via `go run *.go` and press 'a' to get to our 'addModel' you hopefully see something like this: 
 
-![](assets/bubbletea-multimodel-addModel.png)
+![](static/assets/bubbletea-multimodel-addModel.png)
 
 
 ##### Switching models back 
