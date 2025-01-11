@@ -7,33 +7,29 @@ tags = ["Go", "BubbleTea","CLI", "multi model", "BubbleTea V1"]
 name = "Maximilian Soeren Pollak"
 +++
 
-##### Outline
+** Note: The solution presented here was made with BubbleTea V1**
 
-- [No time, give TLDR](#tldr)
-- [The full guide](#the-longer-guide)
-    - [The issue](#the-issue)
-    - [The solution in words](#the-solution)
-    - [Starting to write our solution](#humble-beginings)
-        - [Starting small](#starting-small)
-        - [Adding a database](#the-database)
-    - [First active model](#first-active-model)
-    - [Second active model](#adding-a-second-active-model)
-    - **[The important bit. Switching](#switch-models)**
-    - **[Also important. Switching back](#switch-models-back)**
-    - [But how?](#how-does-it-work)
-- [Source Code Links](#source-code)
-- [Questions?](#questions)
----
+### The issue
+[BubbleTea](https://github.com/charmbracelet/bubbletea) is a great library to make gorgeous TUIs in Go. It is my favourite library to create TUIs by far. However one hurdle that I have encountered is on working with multiple models. I looked around the internet and did not find solutions that I could understand.   
+So in this blog post I would like to make a short example as a guide and help for others who struggle with that concept in BubbleTea.  
+*Note: This is by no means the only way to solve this issue, I just found it the easiest to understand for me.*
 
-#### TLDR
+### The solution
+- The basic conecpt is to have a 'main model' that switches the active model based on commands and then distributes the messages and commands to the active model.
+- Any model if necessary can send a singal to the main model to switch to a different model. 
+- The main model then just initalizes the newly 'requested' model.
+
+### TLDR
 If you just want the answer quickly without much explanation, this is for you.
 You need a couple of prerequisites. This solution assumes you have active models (that do stuff) as well as one facilitating model, 
 which only has the function to get messages and updates to the right place.
 In this example:   
+
 ```
 listModel, addModel = active Models
 mainModel = facilitating Model
 ```
+
 <details><summary>Show TLDR instructions </summary>
 
 ```go
@@ -66,7 +62,7 @@ type switchToListModel struct{}
     case "esc":
         return m, func() tea.Msg { return switchToListModel{} }
 
-// 6. Make sure main Model can capture all signals you send.
+// 6. Ensuring the Model can capture all signals you send.
 
 func (m mainModel) Update(...) {
     //...
@@ -81,12 +77,11 @@ func (m mainModel) Update(...) {
 		return m, m.activeModel.Init()
     //...
     }
-    // Make sure to add this, otherwise the other messages won't be forwarded to the right model. 
+    // Be aware to add this line, otherwise the other messages won't be forwarded to the right model. 
 	m.activeModel, cmd = m.activeModel.Update(msg)
 	return m, cmd
         
-
-// Make sure to call the `mainModel` inside the initialization of your app.
+    // Initialize your app with the mainModel as the root model
 	p := tea.NewProgram(initMainModel())
 
 // fin
@@ -99,29 +94,17 @@ func (m mainModel) Update(...) {
 
 
 <hr>
-<hr>
-
-### The longer guide
-#### The issue
-[BubbleTea](https://github.com/charmbracelet/bubbletea) is a great library to make gorgeous TUI's in Go. It is my favourite library to create TUI's by far. However, one hurdle that I have encountered, is on working with multimple models. I looked around the internet and did not find solutions that I could understand.   
-So in this blog post I would like to make a short example as a guide and help for others who struggle with that concept in BubbleTea.  
-*Note: This is by no means the only way to solve this issue, I just found it the easiest to understand for me.*
-
-#### The solution
-- It basically boils down to have a 'main model' that switches the active model based on commands and then distributes the messages and commands to the active model.
-- Any model if necessary can send a singal to the main model to switch to a different model. 
-- The main model then just initalizes the newly 'requested' model.
 
 
-#### Humble beginings
+## Setting up
 I will guide you through creating a Todo App (I know, I know) that uses multiple models.  
-The multimodel part however should be applicable to any project that you might work on. I hope this is simple enough to understand but complext enough so that you see that this solution can work in bigger applications.
+The multimodel part however should be applicable to any project that you might work on. I hope this is simple enough to understand but complex enough so that you see that this solution can work in bigger applications.
 
 Create a new go project with whatever name you fancy and grab BubbleTea which you can do via: `go get github.com/charmbracelet/bubbletea`.  
 If you want to style it a tiny bit like I did, you also need [lipgloss](https://github.com/charmbracelet/lipgloss).   
 Get it via: `go get github.com/charmbracelet/lipgloss`.
 
-##### Starting small
+
 Let's start with our main.go file. Since we will keep this app rather simple we won't need a complex folder structure, but the solution will work for any project structure. 
 
 <details>
@@ -179,6 +162,7 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func main() {
+
 	p := tea.NewProgram(initMainModel())
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)
@@ -192,11 +176,13 @@ func main() {
 This will give us a very simple BubbleTea app that we now can execute.
 If you run it via `go run main.go` hopefully you should see something like this: 
 
+
 ![](assets/bubbletea-multimodel-starting_model.png)
+
 and you should now be able press `s` or `d` to change the message displayed.
 
-##### The database
-As we just have an example project, I elected to just use a JSON file for as a "database".
+### The database
+As we just have an example project, I elected to just use a JSON file as a "database", as this is good enough for this short demo project.
 You can just make a new JSON file called `tasks.json` and copy the contents below.
 
 <details> <summary>Show json "database" file</summary>
@@ -304,10 +290,10 @@ func SaveTaskDBFile(filepath string, tasks []Task) {
 </details>
 <br>
 
-### First active model
+## First active model
 Since the `mainModel` in the end will just facilitate the messages and switch between the 'active models' we should start work on one of them.  
 
-If we want to display our newly aquired tasks, of course we can't simply do that in the main model, that would defeat the purpose.  
+If we want to display our newly acquired tasks, of course we can't simply do that in the main model, that would defeat the purpose.  
 So let's create our second model, containing a table that can show us all of our tasks. I will put it into `list.go`  
 For that we need the **bubbles** library from charm as well. You can get it via: `go get github.com/charmbracelet/bubbles`
 
@@ -464,7 +450,7 @@ If you now run the application via `go run *.go` it should hopefully look somewh
 
 Pressing 'enter' you should get a nice printout of the currently selected row, and you can also as always exit via `ctrl+c` or `q`
 
-#### Adding a second active model
+## Second active model
 Since we want to switch between models, let's add a second active model. You might want to add more tasks so let's implement a model that 
 lets us do just that.  
 For this I will use charms [huh](https://github.com/charmbracelet/huh) library, add it to the project via `go get github.com/charmbracelet/huh`.
@@ -558,12 +544,12 @@ func (m addModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 </details>
 <br>
 
-#### Switch models
+## Switching models
 
 Now we have two active models, and one 'main' one that facilitates. However currently we have no way of getting from the 
 list model to the add model. So let's change that. 
 First let's choose a key to get to the add model (from the list model). I choose 'a' here but choose whatever you like.
-Then we have to ammend the `list.go` as such: 
+Then we have to amend the `list.go` as such: 
 
 ```go 
 // list.go
@@ -620,7 +606,7 @@ If you now go ahead and run the app via `go run *.go` and press 'a' to get to ou
 ![](assets/bubbletea-multimodel-addModel.png)
 
 
-##### Switching models back 
+### Switching models back 
 If you filled out the form and hit 'confirm' you probably noticed that nothing happend afterwards. You were greeted with a blank screen.
 That is certaintly not ideal, so let's implement the last step which is to switch back to our list model after we added a task.
 
@@ -657,7 +643,7 @@ type switchToListModel struct{}
 ```
 And that's it. Now you should be brough back to the list view once you have added a task.
 
-#### How does it work?
+## How does it work?
 
 `tea.Msg` is defined as an empty interface: `type Msg interface{}`, it can be anything. 
 What we now did is use this fact and made our own 'signal' as an empty struct. 
@@ -671,19 +657,19 @@ return m, func() tea.Msg { return switchToAddModel{} }
 
 And that is all the magic there is. If you want to switch from one model to another all you have to do is this: 
 1. Define an empty struct to use as a signal
-2. Ammend the update function of the model from where you want to switch from to send the signal via line above
+2. Amend the update function of the model from where you want to switch from to send the signal via line above
 3. Catch the signal inside your main model and switch the active model accordingly
 
 And that's it, now you can repeat this process as much as you like.
 
-#### Source Code
+## Source Code
 You can look at the full source code of the final files [here](https://github.com/MaximilianSoerenPollak/blog-posts/bubbletea-multimodel/multimodel-todo)
-If you want to look at the raw Markdown file, you want find that [here](https://github.com/MaximilianSoerenPollak/blog-posts/bubbletea-multimodel/bubbletea-multimodel.md)
+If you want to look at the raw Markdown file, you can find that [here](https://github.com/MaximilianSoerenPollak/blog-posts/bubbletea-multimodel/bubbletea-multimodel.md)
 
 
 Bonus-Info: If you for some reason need to pass data from one model to the other you can also use the signaling structs for that.
 
-#### Questions
+## Questions
 
 If you have any questions regarding this, please do not hesitate to open a discussion in the repository.
 You can get there via this [link](https://github.com/MaximilianSoerenPollak/blog-posts/discussions)
