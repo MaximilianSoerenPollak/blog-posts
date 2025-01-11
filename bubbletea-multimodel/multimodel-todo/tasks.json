@@ -1,0 +1,57 @@
+[
+    {
+        "date": "2024-01-15",
+        "task": "Implement rate limiting middleware",
+        "status": "done"
+    },
+    {
+        "date": "2024-02-01",
+        "task": "Optimize database query performance",
+        "status": "active"
+    },
+    {
+        "date": "2024-02-15",
+        "task": "Set up Redis caching layer",
+        "status": "open"
+    },
+    {
+        "date": "2024-03-01",
+        "task": "Implement OAuth2 authentication",
+        "status": "active"
+    },
+    {
+        "date": "2024-03-15",
+        "task": "Create API documentation using Swagger",
+        "status": "done"
+    },
+    {
+        "date": "2024-04-01",
+        "task": "Set up message queue system with RabbitMQ",
+        "status": "open"
+    },
+    {
+        "date": "2024-04-15",
+        "task": "Implement database sharding strategy",
+        "status": "active"
+    },
+    {
+        "date": "2024-05-01",
+        "task": "Create automated backup system",
+        "status": "open"
+    },
+    {
+        "date": "2024-05-15",
+        "task": "Implement logging and monitoring system",
+        "status": "done"
+    },
+    {
+        "date": "2024-12-28",
+        "task": "finish the blog post",
+        "status": "active"
+    },
+    {
+        "date": "2024-12-28",
+        "task": "test",
+        "status": "open"
+    }
+]
