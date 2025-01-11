@@ -1,13 +1,13 @@
 +++
 title = "BubbleTea multi model tutorial"
 description = "One approach on how to achieve a multi model BubbleTea application"
-date = 2024-12-29
-tags = ["Go", "BubbleTea","CLI", "multi model", "BubbleTea V1"]
+date = 2025-01-11
+tags = ["Go", "BubbleTea","CLI", "multi model", "BubbleTea V1", "Go 1.23.0"]
 
 name = "Maximilian Soeren Pollak"
 +++
 
-** Note: The solution presented here was made with BubbleTea V1**
+** Note: The solution presented here was made with BubbleTea V1 and Go 1.23.0**
 
 ### The issue
 [BubbleTea](https://github.com/charmbracelet/bubbletea) is a great library to make gorgeous TUIs in Go. It is my favourite library to create TUIs by far. However one hurdle that I have encountered is on working with multiple models. I looked around the internet and did not find solutions that I could understand.   
