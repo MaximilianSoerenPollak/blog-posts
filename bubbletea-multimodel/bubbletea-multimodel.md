@@ -15,8 +15,8 @@ So in this blog post I would like to make a short example as a guide and help fo
 *Note: This is by no means the only way to solve this issue, I just found it the easiest to understand for me.*
 
 ### The solution
-- The basic conecpt is to have a 'main model' that switches the active model based on commands and then distributes the messages and commands to the active model.
-- Any model if necessary can send a singal to the main model to switch to a different model. 
+- The basic concept is to have a 'main model' that switches the active model based on commands and then distributes the messages and commands to the active model.
+- Any model if necessary can send a signal to the main model to switch to a different model. 
 - The main model then just initalizes the newly 'requested' model.
 
 ### TLDR
@@ -50,37 +50,21 @@ func initMainModel() mainModel {
 type switchToAddModel struct{}
 type switchToListModel struct{}
 
-// 4. Emit signal from your models Update func (in this case from inside `listModel`)
+// 4. Emit the signal from your models Update func (in this case from inside `listModel`)
     
     case "a":
         return m, func() tea.Msg { return switchToAddModel{} }
 
-// 5. Emit signal from 'switch' model to get back to 'default' model.
+// 5. Emit the signal from 'switch' model to get back to 'default' model.
     
     // You can use whatever you want here. In the long example we use the finishing of a `huh.Form` to send this.
     // But you can also send it on a keypress or whenever.
     case "esc":
         return m, func() tea.Msg { return switchToListModel{} }
 
-// 6. Ensuring the Model can capture all signals you send.
+// 6. Ensuring the Model captures all signals you send.
 
-func (m mainModel) Update(...) {
-    //...
-	switch msg := msg.(type) {
-    //...
-	case switchToAddModel:
-        // initalize the model
-		m.activeModel = initAddModel()
-		return m, m.activeModel.Init()
-    case switchToListModel:
-        m.activeModel = initListModel()
-		return m, m.activeModel.Init()
-    //...
-    }
-    // Be aware to add this line, otherwise the other messages won't be forwarded to the right model. 
-	m.activeModel, cmd = m.activeModel.Update(msg)
-	return m, cmd
-        
+
     // Initialize your app with the mainModel as the root model
 	p := tea.NewProgram(initMainModel())
 
@@ -105,7 +89,7 @@ If you want to style it a tiny bit like I did, you also need [lipgloss](https://
 Get it via: `go get github.com/charmbracelet/lipgloss`.
 
 
-Let's start with our main.go file. Since we will keep this app rather simple we won't need a complex folder structure, but the solution will work for any project structure. 
+Let's start with our main.go file. Since we will keep this app rather simple, we won't need a complex folder structure, but the solution will work for any project structure. 
 
 <details>
     <summary> show the main.go file </summary>
@@ -451,8 +435,8 @@ If you now run the application via `go run *.go` it should hopefully look somewh
 Pressing 'enter' you should get a nice printout of the currently selected row, and you can also as always exit via `ctrl+c` or `q`
 
 ## Second active model
-Since we want to switch between models, let's add a second active model. You might want to add more tasks so let's implement a model that 
-lets us do just that.  
+Since we want to switch between models, let's add a second active model. You might want to add more tasks, so let's implement a model that 
+let's us do just that.  
 For this I will use charms [huh](https://github.com/charmbracelet/huh) library, add it to the project via `go get github.com/charmbracelet/huh`.
 
 Let's create a new file for this model `add.go`. 
@@ -608,7 +592,7 @@ If you now go ahead and run the app via `go run *.go` and press 'a' to get to ou
 
 ### Switching models back 
 If you filled out the form and hit 'confirm' you probably noticed that nothing happend afterwards. You were greeted with a blank screen.
-That is certaintly not ideal, so let's implement the last step which is to switch back to our list model after we added a task.
+That is certainly not ideal, so let's implement the last step which is to switch back to our list model after we added a task.
 
 ```go
 // add.go
@@ -641,15 +625,15 @@ type switchToListModel struct{}
             return m, m.activeModel.Init()
 
 ```
-And that's it. Now you should be brough back to the list view once you have added a task.
+And that's it. Now you should be brought back to the list view once you have added a task.
 
 ## How does it work?
 
 `tea.Msg` is defined as an empty interface: `type Msg interface{}`, it can be anything. 
-What we now did is use this fact and made our own 'signal' as an empty struct. 
+What we did is use this fact and made our own 'signal' as an empty struct. 
 Then when return it inside a anonymous function as a command `func() tea.Msg { return switchToAddModel }`
 Since `tea.Cmd` is defined as such: `type Cmd func() Msg` we can use this to return the message we want.
-So fullfilling the `tea.Model, tea.Cmd` return signature of `Update` like this: 
+So fulilling the `tea.Model, tea.Cmd` return signature of `Update` like this: 
 ```go
 return m, func() tea.Msg { return switchToAddModel{} }
 ```
@@ -667,7 +651,7 @@ You can look at the full source code of the final files [here](https://github.co
 If you want to look at the raw Markdown file, you can find that [here](https://github.com/MaximilianSoerenPollak/blog-posts/bubbletea-multimodel/bubbletea-multimodel.md)
 
 
-Bonus-Info: If you for some reason need to pass data from one model to the other you can also use the signaling structs for that.
+Bonus-Info: If you need to pass data from one model to the other you can also use the signaling structs for that.
 
 ## Questions
 
