@@ -45,7 +45,7 @@ It was a great motivator to get this started, I appreciate you doing that, thank
 The end goal is to buy a TRMNL E-INK display, and write custom plugins.
 Creating a `server` that gathers inputs as well as a `renderer` for the display
 
-![TRMNL E-INK Display Image](assets/eink-display.webp)
+![TRMNL E-INK Display Image](assets/eink-display.jpg)
 [Image source](https://shop.trmnl.com/collections/devices/products/trmnl?variant=51426021343537)
 
 That is it. That still leaves a lot of work to be done, learning C and Zig to enable the writing of the renderer.  
